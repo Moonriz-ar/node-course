@@ -31,21 +31,64 @@ const url = require('url');
 
 ///////////////////////////////////////////////////////////
 // SERVER
+const replaceTemplate = (template, product) => {
+  let output = template.replace(/{%PRODUCT_IMAGE%}/g, product.image);
+  output = output.replace(/{%PRODUCT_NAME%}/g, product.productName);
+  output = output.replace(/{%PRODUCT_NUTRIENTS%}/g, product.nutrients);
+  output = output.replace(/{%PRODUCT_FROM%}/g, product.from);
+  output = output.replace(/{%PRODUCT_QUANTITY%}/g, product.quantity);
+  output = output.replace(/{%PRODUCT_PRICE%}/g, product.price);
+  output = output.replace(/{%PRODUCT_ID%}/g, product.id);
+  output = output.replace(/{%PRODUCT_DESCRIPTION%}/g, product.description);
+
+  if (!product.organic) {
+    output = output.replace(/{%NOT_ORGANIC%}/g, 'not-organic');
+  }
+
+  return output;
+};
+
+const templateOverview = fs.readFileSync(
+  `${__dirname}/templates/template-overview.html`,
+  'utf-8'
+);
+const templateProduct = fs.readFileSync(
+  `${__dirname}/templates/template-product.html`,
+  'utf-8'
+);
+const templateCard = fs.readFileSync(
+  `${__dirname}/templates/template-card.html`,
+  'utf-8'
+);
 const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, 'utf-8');
 const dataObject = JSON.parse(data);
 
 const server = http.createServer((req, res) => {
   const pathName = req.url;
-
+  // overview page
   if (pathName === '/' || pathName === '/overview') {
-    res.end('This is the OVERVIEW');
+    res.writeHead(200, { 'Content-type': 'text/html' });
+
+    const cardsHtml = dataObject
+      .map((product) => replaceTemplate(templateCard, product))
+      .join('');
+
+    const output = templateOverview.replace('{%PRODUCT_CARDS%}', cardsHtml);
+
+    res.end(output);
+
+    // product page
   } else if (pathName === '/product') {
     res.end('This is the PRODUCT');
+
+    // api
   } else if (pathName === '/api') {
     res.writeHead(200, {
       'Content-type': 'application/json',
     });
     res.end(data);
+
+    // not found
   } else {
     res.writeHead(404, {
       'Content-type': 'text/html',
