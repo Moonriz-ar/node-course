@@ -17,6 +17,9 @@ app.use(morgan('dev'));
 // middleware to parse json from request body
 app.use(express.json());
 
+// middleware to serve static files
+app.use(express.static(`${__dirname}/public`));
+
 // middleware just to show a console.log
 app.use((req, res, next) => {
   console.log('hello from the middleware');
