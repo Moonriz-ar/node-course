@@ -36,7 +36,7 @@ const tours = JSON.parse(
 );
 
 ////////////////////////////////////////////////////////
-// HANDLER FUNCTIONS
+// TOURS HANDLER FUNCTIONS
 
 const getAllTours = (req, res) => {
   console.log('time', req.requestTime);
@@ -119,6 +119,44 @@ const deleteTour = (req, res) => {
 };
 
 //////////////////////////////////////////////////////////
+// USERS HANDLER FUNCTIONS
+
+const getAllUsers = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'this route is not yet defined',
+  });
+};
+
+const createUser = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'this route is not yet defined',
+  });
+};
+
+const getUser = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'this route is not yet defined',
+  });
+};
+
+const updateUser = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'this route is not yet defined',
+  });
+};
+
+const deleteUser = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'this route is not yet defined',
+  });
+};
+
+//////////////////////////////////////////////////////////
 // ROUTE HANDLING
 
 // alternative way to do route handling
@@ -136,8 +174,15 @@ app
   .patch(updateTour)
   .delete(deleteTour);
 
+app.route('/api/v1/users').get(getAllUsers).post(createUser);
+app
+  .route('/api/v1/users/:id')
+  .get(getUser)
+  .patch(updateUser)
+  .delete(deleteUser);
+
 ////////////////////////////////////////////////////////
-// SET UP SERVER TO LISTEN FOR REQUESTS
+// START SERVER TO LISTEN FOR REQUESTS
 
 const port = 3000;
 app.listen(port, () => {
