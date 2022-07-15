@@ -12,7 +12,9 @@ const app = express();
 // middleware to add body to request object, otherwise returns undefined
 
 // middleware using morgan for request logging, returns a function
-app.use(morgan('dev'));
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+}
 
 // middleware to parse json from request body
 app.use(express.json());
