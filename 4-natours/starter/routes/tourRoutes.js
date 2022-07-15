@@ -7,12 +7,12 @@ const router = express.Router();
 
 // param middleware to check if id greater than tours array length
 // simple way to check if the tour is present
-router.param('id', tourController.checkID);
+// router.param('id', tourController.checkID);
 
 router
   .route('/')
   .get(tourController.getAllTours)
-  .post(tourController.checkBody, tourController.createTour);
+  .post(tourController.createTour);
 router
   .route('/:id')
   .get(tourController.getTour)
