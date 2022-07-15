@@ -3,31 +3,53 @@ const Tour = require('../models/tourModel');
 ////////////////////////////////////////////////////////
 // tours controllers functions
 
-exports.getAllTours = (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    requestedAt: req.requestTime,
-    // results: tours.length,
-    // data: {
-    //   tours,
-    // },
-  });
+exports.getAllTours = async (req, res) => {
+  try {
+    const tours = await Tour.find();
+
+    res.status(200).json({
+      status: 'success',
+      requestedAt: req.requestTime,
+      results: tours.length,
+      data: {
+        tours,
+      },
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err,
+    });
+  }
 };
 
-exports.getTour = (req, res) => {
-  const id = parseInt(req.params.id);
+exports.getTour = async (req, res) => {
+  const id = req.params.id;
   // const tour = tours.find((tour) => tour.id === id);
 
   // if (!tour) {
   //   return res.status(404).json({ status: 'failed', message: 'Invalid ID' });
   // }
-
-  res.status(200).json({
-    status: 'success',
-    // data: {
-    //   tour,
-    // },
-  });
+  try {
+    const tour = await Tour.findById(id);
+    // if (!tour) {
+    //   return res.status(404).json({
+    //     status: 'failed',
+    //     message: 'Invalid ID',
+    //   });
+    // }
+    return res.status(200).json({
+      status: 'success',
+      data: {
+        tour,
+      },
+    });
+  } catch (err) {
+    return res.status(404).json({
+      status: 'failed',
+      message: err,
+    });
+  }
 };
 
 exports.createTour = async (req, res) => {
