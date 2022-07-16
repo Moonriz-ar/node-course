@@ -4,10 +4,14 @@ dotenv.config({ path: './config.env' });
 const app = require('./app');
 const mongoose = require('mongoose');
 
-const DB = process.env.DATABASE.replace(
-  '<PASSWORD>',
-  process.env.DATABASE_PASSWORD
-);
+// connect to local mongodb
+const DB = process.env.DATABASE_LOCAL;
+
+// connect to mongodb atlas service
+// const DB = process.env.DATABASE_ATLAS.replace(
+//   '<PASSWORD>',
+//   process.env.DATABASE_PASSWORD
+// );
 
 mongoose
   .connect(DB, {
