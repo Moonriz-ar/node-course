@@ -5,8 +5,32 @@ const Tour = require('../models/tourModel');
 
 exports.getAllTours = async (req, res) => {
   try {
-    const tours = await Tour.find();
+    // 1/ basic filtering: filter where
+    const queryObj = { ...req.query };
+    const excludedFields = ['page', 'sort', 'limit', 'fields'];
+    excludedFields.forEach((el) => delete queryObj[el]);
 
+    // 2/ advanced filtering: filter with greater or less than
+    let queryString = JSON.stringify(queryObj);
+    queryString = queryString.replace(
+      /\b(gte|gt|lte|lt)\b/g,
+      (match) => `$${match}`
+    );
+
+    // 1st way to filter query
+    const query = Tour.find(JSON.parse(queryString));
+
+    // 2nd way to filter query
+    // const tours = await Tour.find()
+    //   .where('duration')
+    //   .equals(5)
+    //   .where('difficulty')
+    //   .equals('easy');
+
+    // execute the query
+    const tours = await query;
+
+    // send response
     res.status(200).json({
       status: 'success',
       requestedAt: req.requestTime,
