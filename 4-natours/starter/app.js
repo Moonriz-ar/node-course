@@ -22,12 +22,6 @@ app.use(express.json());
 // middleware to serve static files
 app.use(express.static(`${__dirname}/public`));
 
-// middleware just to show a console.log
-app.use((req, res, next) => {
-  console.log('hello from the middleware');
-  next();
-});
-
 // middleware to add request time
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
@@ -35,8 +29,14 @@ app.use((req, res, next) => {
 });
 
 // middleware for route controllers and handlers
-
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
+
+app.all('*', (req, res, next) => {
+  res.status(404).json({
+    status: 'fail',
+    message: `Can't find ${req.originalUrl} on this server!`,
+  });
+});
 
 module.exports = app;
