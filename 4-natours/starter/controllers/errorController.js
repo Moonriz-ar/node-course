@@ -5,6 +5,12 @@ const handleCastErrorDB = (err) => {
   return new AppError(message, 400);
 };
 
+const handleDuplicateFields = (err) => {
+  const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
+  const message = `Duplicate field value: ${value}. Please use another value!`;
+  return new AppError(message, 400);
+};
+
 const sendErrorDev = (err, res) => {
   res.status(err.statusCode).json({
     status: err.status,
@@ -42,9 +48,10 @@ module.exports = (err, req, res, next) => {
     sendErrorDev(err, res);
   } else if (process.env.NODE_ENV === 'production') {
     let error = { ...err };
-    // handling errors thrown by Mongoose
-    // invalid database IDs
+    // handling invalid database IDs
     if (error.name === 'CastError') error = handleCastErrorDB(error);
+    // handling duplicate database fields
+    if (error.code === 11000) error = handleDuplicateFields(error);
     sendErrorProd(error, res);
   }
 };
