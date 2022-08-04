@@ -19,9 +19,17 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(() => console.log('DB connection successful!'));
+  .then(() => console.log('DB connection successful!'))
+  .catch((err) => console.log(err));
 
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`App running on port ${port}...`);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.log('Unhandled rejection at: ', promise, 'reason: ', reason);
+  server.close(() => {
+    process.exit(1);
+  });
 });
