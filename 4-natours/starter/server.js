@@ -1,5 +1,10 @@
 require('dotenv').config();
 
+process.on('uncaughtException', (err, origin) => {
+  console.log('Uncaught exception', err, 'exception origin', origin);
+  process.exit(1);
+});
+
 const app = require('./app');
 const mongoose = require('mongoose');
 
